@@ -1,0 +1,6 @@
+pluginclassname=SchwarzesBrettPlugin
+pluginname=SchwarzesBrettPlugin
+origin=IBIT
+version=2.2.3
+studipMinVersion=2.0
+description=Globales Schwarzes Brett für Kleinanzeigen mit Kategorien (Gesuche/Angebote)
