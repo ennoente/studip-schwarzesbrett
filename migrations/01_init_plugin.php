@@ -50,6 +50,10 @@ class InitPlugin extends DBMigration
 			VALUES (
 			'edfb16e3830a7e9e1a3ad6e1ef2c71de', '', 'BULLETIN_BOARD_ANNOUNCEMENTS', '20', '1', 'integer', 'global', 'SchwarzesBrettPlugin', '0', '0', '1100709567', 'Wieviele Anzeigen sollen in der Übersicht angezeigt werden?', 'Default: 20', ''
 			)");
+            $db->exec("INSERT IGNORE INTO `config` ( `config_id` , `parent_id` , `field` , `value` , `is_default` , `type` , `range` , `section` , `position` , `mkdate` , `chdate` , `description` , `comment` , `message_template` )
+            VALUES (
+            MD5('BULLETIN_BOARD_BLAME_RECIPIENTS'), '', 'BULLETIN_BOARD_BLAME_RECIPIENTS', 'michael.schaarschmidt@urz.uni-halle.de', '1', 'string', 'global', 'SchwarzesBrettPlugin', '0', '0', '1100709567', 'Mailadressen, an die die Nachricht geschickt werden soll', '', ''
+            )");
         }
     }
 
