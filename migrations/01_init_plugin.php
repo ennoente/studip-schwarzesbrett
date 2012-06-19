@@ -20,7 +20,7 @@ class InitPlugin extends DBMigration
 					  `perm` varchar(255) NOT NULL,
 					  `visible` tinyint(2) NOT NULL default '0',
 					  PRIMARY KEY  (`thema_id`)
-					) TYPE=MyISAM;");
+					) ENGINE=MyISAM;");
 	    	$db->exec("CREATE TABLE IF NOT EXISTS `sb_artikel` (
 					  `artikel_id` varchar(32) NOT NULL,
 					  `thema_id` varchar(32) NOT NULL,
@@ -32,7 +32,7 @@ class InitPlugin extends DBMigration
 					  PRIMARY KEY  (`artikel_id`),
 					  KEY `visible` (`visible`,`mkdate`),
 					  KEY `thema_id` (`thema_id`)
-					) TYPE=MyISAM;");
+					) ENGINE=MyISAM;");
 	    	$db->exec("CREATE TABLE IF NOT EXISTS `sb_visits` (
 					  `object_id` char(32) NOT NULL default '',
 					  `user_id` char(32) NOT NULL default '',
@@ -40,7 +40,7 @@ class InitPlugin extends DBMigration
 					  `last_visitdate` int(20) NOT NULL default '0',
 					  PRIMARY KEY  (`object_id`,`user_id`),
 					  KEY `user_id` (`user_id`,`last_visitdate`)
-					) TYPE=MyISAM;");
+					) ENGINE=MyISAM;");
 	    	$db->exec("INSERT IGNORE INTO `config`
 	    	( `config_id` , `parent_id` , `field` , `value` , `is_default` , `type` , `range` , `section` , `position` , `mkdate` , `chdate` , `description` , `comment` , `message_template` )
  			VALUES (

@@ -13,7 +13,7 @@ class Blacklist extends DBMigration
                       `user_id` varchar(32) NOT NULL,
                       `mkdate` int(20) NOT NULL default '0',
                       PRIMARY KEY (`user_id`)
-                    ) TYPE=MyISAM;");
+                    ) ENGINE=MyISAM;");
     }
 
     function down ()
