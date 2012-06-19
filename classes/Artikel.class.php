@@ -116,6 +116,16 @@ class Artikel
                 ->execute(array($this->artikel_id));
         }
     }
+    
+    public function blame()
+    {
+        $mailContent = "Folgende Anzeige wurde gemeldet:\n\n";
+        $mailContent.= $this->getTitel()."\n";
+        $mailContent.= $this->getBeschreibung()."\n\n";
+        $mailContent.= get_fullname($this->getUserId()).' ('.get_username($this->getUserId()).')';
+        $recipient = get_config('BULLETIN_BOARD_BLAME_RECIPIENTS');
+        mail($recipient, 'Anzeige wurde gemeldet', $mailContent);
+    }
 
     function setTitel($s)
     {

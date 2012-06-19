@@ -19,6 +19,9 @@
     <a href="<?=URLHelper::getLink('sms_send.php', array('rec_uname' => get_username($a->getUserId()), 'messagesubject' => rawurlencode($a->getTitel()), 'message' => '[quote] '.$a->getBeschreibung().' [/quote]')) ?>">
         <?=makeButton("antworten","img", "Dem Benutzer eine Email schreiben")?>
     </a>
+    <a href="<?=$link_blame ?>">
+        <img class="button" src="<?=$pluginpfad ?>/images/AppleOnCampus01.png" alt="Diese Anzeige melden" title="Diese Anzeige melden" />
+    </a>
 <? endif; if($access === true): ?>
     <a href="<?=$link_edit ?>">
         <?=makeButton("bearbeiten","img", "Diese Anzeige bearbeiten")?>

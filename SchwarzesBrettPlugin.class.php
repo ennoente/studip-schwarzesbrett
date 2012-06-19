@@ -744,6 +744,7 @@ class SchwarzesBrettPlugin extends StudIPPlugin implements SystemPlugin
         if($a->getUserId() != $this->user->id)
         {
             $template->set_attribute('antwort', true);
+            $template->set_attribute('link_blame', PluginEngine::getURL($this, array("thema_id"=>$a->getThemaId(), "artikel_id"=>$a->getArtikelId()), 'blameArtikel'));
         }
         $template->set_attribute('link_search', PluginEngine::getURL($this, array("modus"=>"show_search_results")));
         $template->set_attribute('link_back', PluginEngine::getURL($this, array()));
@@ -847,5 +848,23 @@ class SchwarzesBrettPlugin extends StudIPPlugin implements SystemPlugin
         $msg->approvalLink = PluginEngine::getURL($this, $approvalCmd, $link);
         $msg->disapprovalLink = PluginEngine::getURL($this);
         echo $msg->render();
+    }
+
+    public function blameArtikel_action()
+    {
+        $artikel_id = Request::get('artikel_id');
+        $thema_id = Request::get('thema_id');
+        
+        Navigation::activateItem('/schwarzesbrettplugin/show');
+        $a = new Artikel(Request::get('artikel_id'));
+
+        //Artikel melden Sicherheitsabfrage
+        if (Request::get('modus') == "blame_artikel_really") {
+            $a->blame();
+            $this->message = MessageBox::success("Die Anzeige wurde gemeldet");
+        } else {
+            echo $this->createQuestion('Soll die Anzeige **'.$a->getTitel().'** von %%'.get_fullname($a->getUserId()).'%% wirklich gemeldet werden?', array("modus"=>"blame_artikel_really", "artikel_id"=>$a->getArtikelId()), 'blameArtikel');
+        }
+        $this->showThemen();
     }
 }
