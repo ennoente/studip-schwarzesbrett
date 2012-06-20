@@ -745,6 +745,7 @@ class SchwarzesBrettPlugin extends StudIPPlugin implements SystemPlugin
         if($a->getUserId() != $this->user->id)
         {
             $template->set_attribute('antwort', true);
+            $template->set_attribute('enableBlame', get_config('BULLETIN_BOARD_ENABLE_BLAME'));
             $template->set_attribute('link_blame', PluginEngine::getURL($this, array("thema_id"=>$a->getThemaId(), "artikel_id"=>$a->getArtikelId()), 'blameArtikel'));
         }
         $template->set_attribute('link_search', PluginEngine::getURL($this, array("modus"=>"show_search_results")));
@@ -874,16 +875,25 @@ class SchwarzesBrettPlugin extends StudIPPlugin implements SystemPlugin
         if ($this->perm->have_perm('root')) {
             $template = $this->template_factory->open('settings');
             $template->set_layout($this->layout);
-
             if (Request::get('action') == 'save'){
                 write_config('BULLETIN_BOARD_ANNOUNCEMENTS', Request::get('announcements'));
                 write_config('BULLETIN_BOARD_DURATION', Request::get('duration'));
                 write_config('BULLETIN_BOARD_BLAME_RECIPIENTS', Request::get('blameRecipients'));
+                write_config('BULLETIN_BOARD_ENABLE_BLAME', (int)Request::get('enableBlame'));
                 $template->message = MessageBox::success(_('Einstellungen gespeichert.'));
             }
+            $metaAnnouncements   = Config::getInstance()->getMetadata('BULLETIN_BOARD_ANNOUNCEMENTS');
+            $metaDuration        = Config::getInstance()->getMetadata('BULLETIN_BOARD_DURATION');
+            $metaBlameRecipients = Config::getInstance()->getMetadata('BULLETIN_BOARD_BLAME_RECIPIENTS');
+            $metaEnableBlame     = Config::getInstance()->getMetadata('BULLETIN_BOARD_ENABLE_BLAME');
+            $template->set_attribute('descAnnouncements',   $metaAnnouncements['description']);
+            $template->set_attribute('descDuration',        $metaDuration['description']);
+            $template->set_attribute('descBlameRecipients', $metaBlameRecipients['description']);
+            $template->set_attribute('descEnableBlame',     $metaEnableBlame['description']);
             $template->set_attribute('announcements', get_config('BULLETIN_BOARD_ANNOUNCEMENTS'));
             $template->set_attribute('duration', get_config('BULLETIN_BOARD_DURATION'));
             $template->set_attribute('blameRecipients', get_config('BULLETIN_BOARD_BLAME_RECIPIENTS'));
+            $template->set_attribute('enableBlame', get_config('BULLETIN_BOARD_ENABLE_BLAME'));
             $template->set_attribute('link', PluginEngine::getURL($this, array(), 'settings'));
             echo $template->render();
         }
