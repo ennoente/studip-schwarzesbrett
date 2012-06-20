@@ -83,7 +83,8 @@ class SchwarzesBrettPlugin extends StudIPPlugin implements SystemPlugin
             //zusatzpunkte für root
             if ($this->perm->have_perm('root')) {
                 $this->root = true;
-                $root_nav = new AutoNavigation(_('Administration'), PluginEngine::getURL($this, array(), 'editThema'));
+                $root_nav = new AutoNavigation(_('Administration'), PluginEngine::getURL($this, array(), 'settings'));
+                $root_nav->addSubNavigation('settings', new AutoNavigation(_('Grundeinstellungen'), PluginEngine::getURL($this, array(), 'settings')));
                 $root_nav->addSubNavigation('addBlock', new AutoNavigation(_('Neues Thema anlegen'), PluginEngine::getURL($this, array(), 'editThema')));
                 $root_nav->addSubNavigation('blacklist', new AutoNavigation(_('Benutzer-Blacklist'), PluginEngine::getURL($this, array(), 'blacklist')));
                 $root_nav->addSubNavigation('duplicates', new AutoNavigation(_('Doppelte Einträge suchen'), PluginEngine::getURL($this, array(), 'searchDuplicates')));
@@ -867,4 +868,25 @@ class SchwarzesBrettPlugin extends StudIPPlugin implements SystemPlugin
         }
         $this->showThemen();
     }
+    
+    public function settings_action()
+    {
+        if ($this->perm->have_perm('root')) {
+            $template = $this->template_factory->open('settings');
+            $template->set_layout($this->layout);
+
+            if (Request::get('action') == 'save'){
+                write_config('BULLETIN_BOARD_ANNOUNCEMENTS', Request::get('announcements'));
+                write_config('BULLETIN_BOARD_DURATION', Request::get('duration'));
+                write_config('BULLETIN_BOARD_BLAME_RECIPIENTS', Request::get('blameRecipients'));
+                $template->message = MessageBox::success(_('Einstellungen gespeichert.'));
+            }
+            $template->set_attribute('announcements', get_config('BULLETIN_BOARD_ANNOUNCEMENTS'));
+            $template->set_attribute('duration', get_config('BULLETIN_BOARD_DURATION'));
+            $template->set_attribute('blameRecipients', get_config('BULLETIN_BOARD_BLAME_RECIPIENTS'));
+            $template->set_attribute('link', PluginEngine::getURL($this, array(), 'settings'));
+            echo $template->render();
+        }
+    }
+    
 }
