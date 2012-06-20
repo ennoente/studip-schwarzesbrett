@@ -120,9 +120,11 @@ class Artikel
     public function blame()
     {
         $mailContent = "Folgende Anzeige wurde gemeldet:\n\n";
-        $mailContent.= $this->getTitel()."\n";
-        $mailContent.= $this->getBeschreibung()."\n\n";
-        $mailContent.= get_fullname($this->getUserId()).' ('.get_username($this->getUserId()).')';
+        $mailContent.= "Titel: ".$this->getTitel()."\n";
+        $mailContent.= "Text: ".$this->getBeschreibung()."\n";
+        $mailContent.= "ID: ".$this->artikel_id."\n";
+        $mailContent.= "Autor: ".get_fullname($this->getUserId()).' ('.get_username($this->getUserId()).')'."\n";
+        $mailContent.= "Blamer: ".get_fullname($GLOBALS['auth']->auth['uid']).' ('.get_username($GLOBALS['auth']->auth['uid']).')';
         $recipient = get_config('BULLETIN_BOARD_BLAME_RECIPIENTS');
         mail($recipient, 'Anzeige wurde gemeldet', $mailContent);
     }
