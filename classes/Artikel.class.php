@@ -125,8 +125,11 @@ class Artikel
         $mailContent.= "ID: ".$this->artikel_id."\n";
         $mailContent.= "Autor: ".get_fullname($this->getUserId()).' ('.get_username($this->getUserId()).')'."\n";
         $mailContent.= "Blamer: ".get_fullname($GLOBALS['auth']->auth['uid']).' ('.get_username($GLOBALS['auth']->auth['uid']).')';
-        $recipient = get_config('BULLETIN_BOARD_BLAME_RECIPIENTS');
-        mail($recipient, 'Anzeige wurde gemeldet', $mailContent);
+        $mail = new StudipMail();
+        $mail->addRecipient(get_config('BULLETIN_BOARD_BLAME_RECIPIENTS'))
+             ->setSubject('Anzeige wurde gemeldet')
+             ->setBodyText($mailContent)
+             ->send();        
     }
 
     function setTitel($s)
