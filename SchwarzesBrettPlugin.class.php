@@ -862,10 +862,14 @@ class SchwarzesBrettPlugin extends StudIPPlugin implements SystemPlugin
 
         //Artikel melden Sicherheitsabfrage
         if (Request::get('modus') == "blame_artikel_really") {
-            $a->blame();
+            $a->blame(Request::get('blame_reason'));
             $this->message = MessageBox::success("Die Anzeige wurde gemeldet");
         } else {
-            echo $this->createQuestion('Soll die Anzeige **'.$a->getTitel().'** von %%'.get_fullname($a->getUserId()).'%% wirklich gemeldet werden?', array("modus"=>"blame_artikel_really", "artikel_id"=>$a->getArtikelId()), 'blameArtikel');
+            $msg = $this->template_factory->open('blame_dialog');
+            $msg->question = 'Soll die Anzeige **'.$a->getTitel().'** von %%'.get_fullname($a->getUserId()).'%% wirklich gemeldet werden?';
+            $msg->approvalLink = PluginEngine::getURL($this, array("modus"=>"blame_artikel_really", "artikel_id"=>$a->getArtikelId()), 'blameArtikel');
+            $msg->disapprovalLink = PluginEngine::getURL($this);
+            echo $msg->render();
         }
         $this->showThemen();
     }

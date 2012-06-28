@@ -117,19 +117,20 @@ class Artikel
         }
     }
     
-    public function blame()
+    public function blame($blameReason)
     {
         $mailContent = "Folgende Anzeige wurde gemeldet:\n\n";
         $mailContent.= "Titel: ".$this->getTitel()."\n";
         $mailContent.= "Text: ".$this->getBeschreibung()."\n";
         $mailContent.= "ID: ".$this->artikel_id."\n";
         $mailContent.= "Autor: ".get_fullname($this->getUserId()).' ('.get_username($this->getUserId()).')'."\n";
-        $mailContent.= "Blamer: ".get_fullname($GLOBALS['auth']->auth['uid']).' ('.get_username($GLOBALS['auth']->auth['uid']).')';
+        $mailContent.= "Blamer: ".get_fullname($GLOBALS['auth']->auth['uid']).' ('.get_username($GLOBALS['auth']->auth['uid']).')'."\n";
+        $mailContent.= "Grund: ".$blameReason;
         $mail = new StudipMail();
         $mail->addRecipient(get_config('BULLETIN_BOARD_BLAME_RECIPIENTS'))
              ->setSubject('Anzeige wurde gemeldet')
              ->setBodyText($mailContent)
-             ->send();        
+             ->send();
     }
 
     function setTitel($s)
