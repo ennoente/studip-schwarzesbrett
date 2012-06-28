@@ -852,6 +852,10 @@ class SchwarzesBrettPlugin extends StudIPPlugin implements SystemPlugin
         echo $msg->render();
     }
 
+    /**
+     * Managed das Melden eines Angebots
+     * Zeigt einen Modalen Dialog, wird dieser bestätigt wir das Angebot gemeldet
+     */
     public function blameArtikel_action()
     {
         $artikel_id = Request::get('artikel_id');
@@ -874,6 +878,9 @@ class SchwarzesBrettPlugin extends StudIPPlugin implements SystemPlugin
         $this->showThemen();
     }
     
+    /**
+     * Zeigt die Einstellungsseite
+     */
     public function settings_action()
     {
         if ($this->perm->have_perm('root')) {

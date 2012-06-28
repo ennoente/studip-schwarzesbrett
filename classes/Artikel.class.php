@@ -117,6 +117,10 @@ class Artikel
         }
     }
     
+    /**
+     * Sendet eine Blame-Mail
+     * @param $blameReason Grund des Meldens
+     */
     public function blame($blameReason)
     {
         $mailContent = "Folgende Anzeige wurde gemeldet:\n\n";
