@@ -123,13 +123,20 @@ class Artikel
      */
     public function blame($blameReason)
     {
+        global $ABSOLUTE_URI_STUDIP;
+        $url = $ABSOLUTE_URI_STUDIP;
+        if (substr($ABSOLUTE_URI_STUDIP, -1) === '/')
+            $url = substr($url, 0, -1);
+        
         $mailContent = "Folgende Anzeige wurde gemeldet:\n\n";
-        $mailContent.= "Titel: ".$this->getTitel()."\n";
-        $mailContent.= "Text: ".$this->getBeschreibung()."\n";
-        $mailContent.= "ID: ".$this->artikel_id."\n";
-        $mailContent.= "Autor: ".get_fullname($this->getUserId()).' ('.get_username($this->getUserId()).')'."\n";
-        $mailContent.= "Blamer: ".get_fullname($GLOBALS['auth']->auth['uid']).' ('.get_username($GLOBALS['auth']->auth['uid']).')'."\n";
-        $mailContent.= "Grund: ".$blameReason;
+        $mailContent.= "Titel: ".$this->getTitel()."\n\n";
+        $mailContent.= "Text: ".$this->getBeschreibung()."\n\n";
+        $mailContent.= "ID: ".$this->artikel_id."\n\n";
+        $mailContent.= "Autor: ".get_fullname($this->getUserId()).' ('.get_username($this->getUserId()).')'."\n\n";
+        $mailContent.= "Blamer: ".get_fullname($GLOBALS['auth']->auth['uid']).' ('.get_username($GLOBALS['auth']->auth['uid']).')'."\n\n";
+        $mailContent.= "Grund: ".$blameReason."\n\n";
+        $mailContent.= "Anzeige Loeschen: ".$url.PluginEngine::getURL('schwarzesbrettplugin', array("artikel_id"=>$this->getArtikelId()), 'deleteArtikel')."\n\n";
+        $mailContent.= "Anzeige Bearbeiten: ".$url.PluginEngine::getURL('schwarzesbrettplugin', array("artikel_id"=>$this->getArtikelId()), 'editArtikel')."\n\n";
         $mail = new StudipMail();
         $mail->addRecipient(get_config('BULLETIN_BOARD_BLAME_RECIPIENTS'))
              ->setSubject('Anzeige wurde gemeldet')
