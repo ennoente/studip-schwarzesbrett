@@ -137,6 +137,12 @@ class Artikel
         $mailContent.= "Grund: ".$blameReason."\n\n";
         $mailContent.= "Anzeige Loeschen: ".$url.PluginEngine::getURL('schwarzesbrettplugin', array("artikel_id"=>$this->getArtikelId()), 'deleteArtikel')."\n\n";
         $mailContent.= "Anzeige Bearbeiten: ".$url.PluginEngine::getURL('schwarzesbrettplugin', array("artikel_id"=>$this->getArtikelId()), 'editArtikel')."\n\n";
+        $mailContent.= "Antworten: ".$url.URLHelper::getLink('sms_send.php', 
+                                                             array(
+                                                                 'rec_uname' => get_username($this->getUserId()), 
+                                                                 'messagesubject' => rawurlencode($this->getTitel()), 
+                                                                 'message' => '[quote] '.$this->getBeschreibung().' [/quote]')
+                                                             )."\n\n";
         $mail = new StudipMail();
         $mail->addRecipient(get_config('BULLETIN_BOARD_BLAME_RECIPIENTS'))
              ->setSubject('Anzeige wurde gemeldet')
