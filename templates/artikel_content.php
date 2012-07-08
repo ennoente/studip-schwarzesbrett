@@ -21,7 +21,7 @@
     </a>
 <? endif; if($enableBlame == 1): ?>
     <a href="<?=$link_blame ?>">
-        <img class="button" src="<?=$pluginpfad ?>/images/AppleOnCampus01.png" alt="Diese Anzeige melden" title="Diese Anzeige melden" />
+        <img class="button" src="<?=$pluginpfad ?>/images/anzeige_melden.png" alt="Diese Anzeige melden" title="Diese Anzeige melden" />
     </a>
 <? endif; if($access === true): ?>
     <a href="<?=$link_edit ?>">
