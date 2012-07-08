@@ -41,24 +41,16 @@ class InitPlugin extends DBMigration
 					  PRIMARY KEY  (`object_id`,`user_id`),
 					  KEY `user_id` (`user_id`,`last_visitdate`)
 					) ENGINE=MyISAM;");
+	    	$db->exec("INSERT IGNORE INTO `config`
+	    	( `config_id` , `parent_id` , `field` , `value` , `is_default` , `type` , `range` , `section` , `position` , `mkdate` , `chdate` , `description` , `comment` , `message_template` )
+ 			VALUES (
+ 			'edfb16e3830a7e9e1a3ad6e1ef2c71dg', '', 'BULLETIN_BOARD_DURATION', '30', '1', 'integer', 'global', 'SchwarzesBrettPlugin', '0', '0', '1100709567', 'Wie lange dürfen Anzeigen auf dem schwarzen Brett erscheinen (in Tagen)', 'Default: 30', ''
+			)");
+	    	$db->exec("INSERT IGNORE INTO `config` ( `config_id` , `parent_id` , `field` , `value` , `is_default` , `type` , `range` , `section` , `position` , `mkdate` , `chdate` , `description` , `comment` , `message_template` )
+			VALUES (
+			'edfb16e3830a7e9e1a3ad6e1ef2c71de', '', 'BULLETIN_BOARD_ANNOUNCEMENTS', '20', '1', 'integer', 'global', 'SchwarzesBrettPlugin', '0', '0', '1100709567', 'Wieviele Anzeigen sollen in der Übersicht angezeigt werden?', 'Default: 20', ''
+			)");
         }
-    	$db->exec("INSERT IGNORE INTO `config`
-    	( `config_id` , `parent_id` , `field` , `value` , `is_default` , `type` , `range` , `section` , `position` , `mkdate` , `chdate` , `description` , `comment` , `message_template` )
-		VALUES (
-		'edfb16e3830a7e9e1a3ad6e1ef2c71dg', '', 'BULLETIN_BOARD_DURATION', '30', '1', 'integer', 'global', 'SchwarzesBrettPlugin', '0', '0', '1100709567', 'Wie lange dürfen Anzeigen auf dem schwarzen Brett erscheinen (in Tagen)', 'Default: 30', ''
-		)");
-    	$db->exec("INSERT IGNORE INTO `config` ( `config_id` , `parent_id` , `field` , `value` , `is_default` , `type` , `range` , `section` , `position` , `mkdate` , `chdate` , `description` , `comment` , `message_template` )
-		VALUES (
-		'edfb16e3830a7e9e1a3ad6e1ef2c71de', '', 'BULLETIN_BOARD_ANNOUNCEMENTS', '20', '1', 'integer', 'global', 'SchwarzesBrettPlugin', '0', '0', '1100709567', 'Wieviele Anzeigen sollen in der Übersicht angezeigt werden?', 'Default: 20', ''
-		)");
-        $db->exec("INSERT IGNORE INTO `config` ( `config_id` , `parent_id` , `field` , `value` , `is_default` , `type` , `range` , `section` , `position` , `mkdate` , `chdate` , `description` , `comment` , `message_template` )
-        VALUES (
-        MD5('BULLETIN_BOARD_BLAME_RECIPIENTS'), '', 'BULLETIN_BOARD_BLAME_RECIPIENTS', 'michael.schaarschmidt@urz.uni-halle.de', '1', 'string', 'global', 'SchwarzesBrettPlugin', '0', '0', '1100709567', 'Mailadressen, an die die Nachricht geschickt werden soll', '', ''
-        )");
-        $db->exec("INSERT IGNORE INTO `config` ( `config_id` , `parent_id` , `field` , `value` , `is_default` , `type` , `range` , `section` , `position` , `mkdate` , `chdate` , `description` , `comment` , `message_template` )
-        VALUES (
-        MD5('BULLETIN_BOARD_ENABLE_BLAME'), '', 'BULLETIN_BOARD_ENABLE_BLAME', '1', '1', 'boolean', 'global', 'SchwarzesBrettPlugin', '0', '0', '1100709567', 'Blame Funktion aktivieren', '', ''
-        )");
     }
 
     function down ()
