@@ -870,7 +870,7 @@ class SchwarzesBrettPlugin extends StudIPPlugin implements SystemPlugin
             $this->message = MessageBox::success("Die Anzeige wurde gemeldet");
         } else {
             $msg = $this->template_factory->open('blame_dialog');
-            $msg->question = 'Soll die Anzeige **'.$a->getTitel().'** von %%'.get_fullname($a->getUserId()).'%% wirklich gemeldet werden?';
+            $msg->question = 'Soll die Anzeige "**'.$a->getTitel().'**" von %%'.get_fullname($a->getUserId()).'%% wirklich gemeldet werden?';
             $msg->approvalLink = PluginEngine::getURL($this, array("modus"=>"blame_artikel_really", "artikel_id"=>$a->getArtikelId()), 'blameArtikel');
             $msg->disapprovalLink = PluginEngine::getURL($this);
             echo $msg->render();
