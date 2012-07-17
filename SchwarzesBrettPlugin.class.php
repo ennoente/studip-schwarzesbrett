@@ -9,10 +9,11 @@
  * @author      Jan-Hendrik Willms <tleilax+studip@gmail.com>
  * @author      Jan Kulmann <jankul@zmml.uni-bremen.de>
  * @author      Michael Riehemann <michael.riehemann@uni-oldenburg.de>
+ * @author      Daniel Kabel <daniel.kabel@me.com>
  * @package     IBIT_SchwarzesBrettPlugin
  * @copyright   2008-2010 IBIT und ZMML
  * @license     http://www.gnu.org/licenses/gpl.html GPL Licence 3
- * @version     2.2
+ * @version     2.3
  */
 
 // IMPORTS
