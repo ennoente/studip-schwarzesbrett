@@ -23,6 +23,7 @@ class Artikel
     private $beschreibung = '';
     private $user_id      = '';
     private $visible      = 1;
+    private $publishable  = 1;
     private $thema_id     = '';
     private $thema_titel  = '';
     private $artikel_id   = '';
@@ -55,6 +56,7 @@ class Artikel
         $this->beschreibung = $artikel['beschreibung'];
         $this->user_id      = $artikel['user_id'];
         $this->visible      = $artikel['visible'];
+        $this->publishable  = $artikel['publishable'];
         $this->thema_id     = $artikel['thema_id'];
         $this->artikel_id   = $artikel['artikel_id'];
         $this->mkdatum      = $artikel['mkdate'];
@@ -71,13 +73,13 @@ class Artikel
             //vorhanden Artikel updaten
             if ($this->artikel_id != "") {
                 $query = "UPDATE sb_artikel "
-                       . "SET titel= ?, beschreibung= ?, visible= ?, thema_id= ? "
+                       . "SET titel= ?, beschreibung= ?, visible= ?, publishable= ?, thema_id= ? "
                        . "WHERE artikel_id = ?";
                 DBManager::get()
                     ->prepare($query)
                     ->execute(array(
                         $this->titel, $this->beschreibung, $this->visible,
-                        $this->thema_id, $this->artikel_id
+                        $this->publishable, $this->thema_id, $this->artikel_id
                     ));
             }
             //Neuen Artikel speichern
@@ -85,14 +87,14 @@ class Artikel
                 $id = md5(uniqid(time()));
 
                 $query = "INSERT INTO sb_artikel "
-                       . " (artikel_id, thema_id, titel, user_id, mkdate, beschreibung, visible) "
+                       . " (artikel_id, thema_id, titel, user_id, mkdate, beschreibung, visible, publishable) "
                        . "VALUES (?, ?, ?, ?, UNIX_TIMESTAMP(), ?, ?)";
                 DBManager::get()
                     ->prepare($query)
                     ->execute(array(
                         $id, $this->thema_id, $this->titel,
                         $GLOBALS['auth']->auth['uid'], $this->beschreibung,
-                        $this->visible
+                        $this->visible, $this->publishable
                     ));
             }
         }
@@ -170,6 +172,11 @@ class Artikel
         $this->visible = $s;
     }
 
+    function setPublishable($s)
+    {
+        $this->publishable = $s;
+    }
+
     function setThemaId($s)
     {
         $this->thema_id = $s;
@@ -198,6 +205,11 @@ class Artikel
     function getVisible()
     {
         return $this->visible;
+    }
+
+    function getPublishable()
+    {
+        return $this->publishable;
     }
 
     /**

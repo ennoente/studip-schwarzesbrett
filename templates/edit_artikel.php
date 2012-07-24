@@ -32,6 +32,10 @@
             <td>sichtbar:</td>
             <td><input type="checkbox" name="visible" value="1" <? if($a->getvisible()) echo'checked="checked"';?> /></td>
         </tr>
+        <tr class="steelgraulight">
+            <td>Ver&ouml;ffentlichung:</td>
+            <td><input type="checkbox" name="publishable" value="1" <? if($a->getPublishable()) echo'checked="checked"';?> />Diese Anzeige darf im RSS Feed und anderen Portalen veröffentlich werden (z.B. ich-will-wissen.de).</td>
+        </tr>
         <tr>
             <td colspan="2" align="center">
             <!-- Laufzeit bis zum <?= date("d.m.y",($a->getmkdate() ? $a->getmkdate() : time()) + $zeit )?><br/> -->

@@ -82,6 +82,9 @@
                 <a href="<?= URLHelper::getLink($link_delete, array('thema_id' => $result['thema']->getThemaId())) ?>">
                     <?= Assets::img('icons/16/blue/trash.png', array('class' => 'text-top', 'title' => _('Thema inkl. aller Anzeigen löschen'))) ?>
                 </a>
+                <a href="<?= URLHelper::getLink($link_rss, array('thema_id' => $result['thema']->getThemaId())) ?>">
+                    <?= Assets::img('icons/16/blue/rss.png', array('class' => 'text-top', 'title' => _('RSS Feed'))) ?>
+                </a>
         <? endif ?>
         </div>
         <div style="clear:both; border-bottom: 1px solid #8e8e8e;"></div>

@@ -30,6 +30,7 @@ class SchwarzesBrettPlugin extends StudIPPlugin implements SystemPlugin
 
     const THEMEN_CACHE_KEY = 'plugins/SchwarzesBrettPlugin/themen';
     const ARTIKEL_CACHE_KEY = 'plugins/SchwarzesBrettPlugin/artikel/';
+    const ARTIKEL_PUBLISHABLE_CACHE_KEY = 'plugins/SchwarzesBrettPlugin/artikel/publishable';
 
     /**
      *
@@ -159,6 +160,7 @@ class SchwarzesBrettPlugin extends StudIPPlugin implements SystemPlugin
             $a->setBeschreibung(Request::get('beschreibung'));
             $a->setThemaId(Request::get('thema_id'));
             $a->setVisible(Request::get('visible', 0));
+            $a->setPublishable(Request::get('publishable', 0));
 
             //keine thema
             if(Request::get('thema_id') == 'nix') {
@@ -172,6 +174,8 @@ class SchwarzesBrettPlugin extends StudIPPlugin implements SystemPlugin
                 $this->message =  MessageBox::success("Die Anzeige wurde erfolgreich gespeichert.");
                 //nach dem verändern der themen, muss auch der cache geleert werden
                 StudipCacheFactory::getCache()->expire(self::ARTIKEL_CACHE_KEY.$a->getThemaId());
+                StudipCacheFactory::getCache()->expire(self::ARTIKEL_PUBLISHABLE_CACHE_KEY.$a->getThemaId());
+                StudipCacheFactory::getCache()->expire(self::ARTIKEL_PUBLISHABLE_CACHE_KEY.'all');
                 StudipCacheFactory::getCache()->expire(self::THEMEN_CACHE_KEY);
                 $this->show_action();
                 return;
@@ -666,6 +670,7 @@ class SchwarzesBrettPlugin extends StudIPPlugin implements SystemPlugin
         $template->set_attribute('link_edit', PluginEngine::getURL($this, array(), 'editThema'));
         $template->set_attribute('link_artikel', PluginEngine::getURL($this, array(), 'editArtikel'));
         $template->set_attribute('link_delete', PluginEngine::getURL($this, array(), 'deleteThema'));
+        $template->set_attribute('link_rss', PluginEngine::getURL($this, array(), 'rss'));
         $template->set_attribute('link_search', PluginEngine::getURL($this, array("modus" => "show_search_results")));
         $template->set_attribute('link_back', PluginEngine::getURL($this, array()));
         $template->set_attribute('last_visit_date', $this->last_visitdate);
@@ -912,5 +917,95 @@ class SchwarzesBrettPlugin extends StudIPPlugin implements SystemPlugin
             echo $template->render();
         }
     }
-    
+
+    /**
+     * Zeigt den RSS Feed des Schwarzen Bretts
+     */
+    public function rss_action()
+    {
+        global $ABSOLUTE_URI_STUDIP;
+        $studipUrl = $ABSOLUTE_URI_STUDIP;
+        if (substr($ABSOLUTE_URI_STUDIP, -1) === '/')
+            $studipUrl = substr($studipUrl, 0, -1);
+
+        $themaId = Request::get('thema_id', false);
+        $items = '';
+        foreach ($this->getPublishableArtikel($themaId) as $article) {
+            $template = $this->template_factory->open('rss_artikel');
+            $template->set_attribute('studipUrl', $studipUrl);
+            $template->set_attribute('title', $article->getTitel());
+            $template->set_attribute('description', $article->getBeschreibung());
+            $template->set_attribute('pubDate', $article->getMkdate());
+            $template->set_attribute('guid', $article->getArtikelId());
+            $items.=$template->render();
+        }
+
+        $thema = '';
+        $description = '';
+        if ($themaId != 'all') {
+            $t = new Thema($themaId);
+            $thema = ' - '.$t->getTitel();
+            $description = $t->getBeschreibung();
+        }
+        header("Content-type: text/xml; charset=utf-8");
+        $template = $this->template_factory->open('rss');
+        $template->set_attribute('selfLink', $studipUrl.PluginEngine::getURL($this, array('thema_id' => $themaId), 'rss'));
+        $template->set_attribute('studipUrl', $studipUrl);
+        $template->set_attribute('title', 'Stud.IP Schwarzes Brett'.$thema);
+        $template->set_attribute('description', $description);
+        $template->set_attribute('items', $items);
+        echo $template->render();
+    }
+
+    /**
+     * Gibt alle Anzeigen zurück, die veröffentlicht werden dürfen
+     *
+     * @uses StudipCache
+     *
+     * @param string $thema_id
+     * @return array Anzeigen
+     */
+    private function getPublishableArtikel($thema_id)
+    {
+        $cache = StudipCacheFactory::getCache();
+        $ret = unserialize($cache->read(self::ARTIKEL_PUBLISHABLE_CACHE_KEY.$thema_id));
+
+        if (!empty($ret)) {
+            return $ret;
+        }
+
+        $ret = array();
+
+        if ($thema_id != 'all') {
+            $query = "SELECT artikel_id "
+                   . "FROM sb_artikel "
+                   . "WHERE thema_id = ? AND UNIX_TIMESTAMP() < mkdate + ? "
+                   .   "AND visible = 1 AND publishable = 1 "
+                   . "ORDER BY mkdate DESC";
+            $statement = DBManager::get()->prepare($query);
+            $statement->execute(array(
+                $thema_id, $this->zeit
+            ));
+        } else {
+            $query = "SELECT artikel_id "
+                   . "FROM sb_artikel "
+                   . "WHERE UNIX_TIMESTAMP() < mkdate + ? "
+                   .   "AND visible = 1 AND publishable = 1 "
+                   . "ORDER BY mkdate DESC";
+            $statement = DBManager::get()->prepare($query);
+            $statement->execute(array(
+                $this->zeit
+            ));
+        }
+
+        $artikel_ids = $statement->fetchAll(PDO::FETCH_COLUMN);
+
+        foreach ($artikel_ids as $artikel_id) {
+            $ret[] = new Artikel($artikel_id);
+        }
+
+        $cache->write(self::ARTIKEL_PUBLISHABLE_CACHE_KEY.$thema_id, serialize($ret));
+
+        return $ret;
+    }
 }
