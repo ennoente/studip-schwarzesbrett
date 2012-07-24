@@ -88,7 +88,7 @@ class Artikel
 
                 $query = "INSERT INTO sb_artikel "
                        . " (artikel_id, thema_id, titel, user_id, mkdate, beschreibung, visible, publishable) "
-                       . "VALUES (?, ?, ?, ?, UNIX_TIMESTAMP(), ?, ?)";
+                       . "VALUES (?, ?, ?, ?, UNIX_TIMESTAMP(), ?, ?, ?)";
                 DBManager::get()
                     ->prepare($query)
                     ->execute(array(
