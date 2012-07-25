@@ -55,7 +55,13 @@
 <? if($keinethemen): ?>
 <?= MessageBox::info(_('Zur Zeit sind keine Themen vorhanden!')) ?>
 <? else: ?>
-<div class="topic"><b>Themenübersicht:</b></div>
+<div class="topic">
+    <b>Themenübersicht:</b>
+    <div style="float: right;">
+        <a href="<?= URLHelper::getLink($link_rss, array('thema_id' => 'all')) ?>">
+            <?= Assets::img('icons/16/white/rss.png', array('class' => 'text-top', 'title' => _('RSS Feed'))) ?></a>
+    </div>
+</div>
 <table class="blank" border="0" cellpadding="0" cellspacing="0" width="100%">
     <tr>
 <?  $tindex = 0; foreach ($results as $result): ?>
