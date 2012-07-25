@@ -248,6 +248,8 @@ class SchwarzesBrettPlugin extends StudIPPlugin implements SystemPlugin
                     $this->message = MessageBox::success("Das Thema wurde erfolgreich gespeichert.");
                     //nach dem verändern der themen, muss auch der cache geleert werden
                     StudipCacheFactory::getCache()->expire(self::THEMEN_CACHE_KEY);
+                    StudipCacheFactory::getCache()->expire(self::ARTIKEL_PUBLISHABLE_CACHE_KEY.$t->getThemaId());
+                    StudipCacheFactory::getCache()->expire(self::ARTIKEL_PUBLISHABLE_CACHE_KEY.'all');
                     $this->showThemen();
                     return;
                 } else {
@@ -307,6 +309,7 @@ class SchwarzesBrettPlugin extends StudIPPlugin implements SystemPlugin
                 $this->message =  MessageBox::success("Das Thema und alle dazugehörigen Anzeigen wurden erfolgreich gelöscht.");
                 //nach dem verändern der themen, muss auch der cache geleert werden
                 StudipCacheFactory::getCache()->expire(self::THEMEN_CACHE_KEY);
+                StudipCacheFactory::getCache()->expire(self::ARTIKEL_PUBLISHABLE_CACHE_KEY.'all');
             } else {
                 $t = new Thema(Request::get('thema_id'));
                 echo $this->createQuestion('Soll das Thema **'.$t->getTitel().'** wirklich gelöscht werden?', array("modus"=>"delete_thema_really", "thema_id"=>$t->getThemaId()), 'deleteThema');
@@ -337,6 +340,8 @@ class SchwarzesBrettPlugin extends StudIPPlugin implements SystemPlugin
             $cache = StudipCacheFactory::getCache();
             $cache->expire(self::ARTIKEL_CACHE_KEY.$a->getThemaId());
             $cache->expire(self::THEMEN_CACHE_KEY);
+            $cache->expire(self::ARTIKEL_PUBLISHABLE_CACHE_KEY.$a->getThemaId());
+            $cache->expire(self::ARTIKEL_PUBLISHABLE_CACHE_KEY.'all');
         } elseif ($a->getUserId() == $this->user->id || $this->perm->have_perm('root')) {
             echo $this->createQuestion('Soll die Anzeige **'.$a->getTitel().'** von %%'.get_fullname($a->getUserId()).'%% wirklich gelöscht werden?', array("modus"=>"delete_artikel_really", "artikel_id"=>$a->getArtikelId()), 'deleteArtikel');
         } else {
@@ -895,6 +900,11 @@ class SchwarzesBrettPlugin extends StudIPPlugin implements SystemPlugin
             $template = $this->template_factory->open('settings');
             $template->set_layout($this->layout);
             if (Request::get('action') == 'save'){
+                foreach ($this->getThemen() as $thema) {
+                    StudipCacheFactory::getCache()->expire(self::ARTIKEL_CACHE_KEY.$thema->getThemaId());
+                    StudipCacheFactory::getCache()->expire(self::ARTIKEL_PUBLISHABLE_CACHE_KEY.$thema->getThemaId());
+                }
+                StudipCacheFactory::getCache()->expire(self::ARTIKEL_PUBLISHABLE_CACHE_KEY.'all');
                 write_config('BULLETIN_BOARD_ANNOUNCEMENTS', Request::get('announcements'));
                 write_config('BULLETIN_BOARD_DURATION', Request::get('duration'));
                 write_config('BULLETIN_BOARD_BLAME_RECIPIENTS', Request::get('blameRecipients'));
