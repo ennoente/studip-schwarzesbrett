@@ -13,7 +13,7 @@
  * @package     IBIT_SchwarzesBrettPlugin
  * @copyright   2008-2010 IBIT und ZMML
  * @license     http://www.gnu.org/licenses/gpl.html GPL Licence 3
- * @version     2.3
+ * @version     2.4.1
  */
 
 // IMPORTS
@@ -680,6 +680,7 @@ class SchwarzesBrettPlugin extends StudIPPlugin implements SystemPlugin
         $template->set_attribute('link_back', PluginEngine::getURL($this, array()));
         $template->set_attribute('last_visit_date', $this->last_visitdate);
         $template->set_attribute('root', $this->root);
+        $template->set_attribute('enableRss', get_config('BULLETIN_BOARD_ENABLE_RSS'));
 
         //Keine themen vorhanden
         if (count($themen) == 0) {
@@ -909,20 +910,24 @@ class SchwarzesBrettPlugin extends StudIPPlugin implements SystemPlugin
                 write_config('BULLETIN_BOARD_DURATION', Request::get('duration'));
                 write_config('BULLETIN_BOARD_BLAME_RECIPIENTS', Request::get('blameRecipients'));
                 write_config('BULLETIN_BOARD_ENABLE_BLAME', (int)Request::get('enableBlame'));
+                write_config('BULLETIN_BOARD_ENABLE_RSS', (int)Request::get('enableRss'));
                 $template->message = MessageBox::success(_('Einstellungen gespeichert.'));
             }
             $metaAnnouncements   = Config::getInstance()->getMetadata('BULLETIN_BOARD_ANNOUNCEMENTS');
             $metaDuration        = Config::getInstance()->getMetadata('BULLETIN_BOARD_DURATION');
             $metaBlameRecipients = Config::getInstance()->getMetadata('BULLETIN_BOARD_BLAME_RECIPIENTS');
             $metaEnableBlame     = Config::getInstance()->getMetadata('BULLETIN_BOARD_ENABLE_BLAME');
+            $metaEnableRss       = Config::getInstance()->getMetadata('BULLETIN_BOARD_ENABLE_RSS');
             $template->set_attribute('descAnnouncements',   $metaAnnouncements['description']);
             $template->set_attribute('descDuration',        $metaDuration['description']);
             $template->set_attribute('descBlameRecipients', $metaBlameRecipients['description']);
             $template->set_attribute('descEnableBlame',     $metaEnableBlame['description']);
+            $template->set_attribute('descEnableRss',       $metaEnableRss['description']);
             $template->set_attribute('announcements', get_config('BULLETIN_BOARD_ANNOUNCEMENTS'));
             $template->set_attribute('duration', get_config('BULLETIN_BOARD_DURATION'));
             $template->set_attribute('blameRecipients', get_config('BULLETIN_BOARD_BLAME_RECIPIENTS'));
             $template->set_attribute('enableBlame', get_config('BULLETIN_BOARD_ENABLE_BLAME'));
+            $template->set_attribute('enableRss', get_config('BULLETIN_BOARD_ENABLE_RSS'));
             $template->set_attribute('link', PluginEngine::getURL($this, array(), 'settings'));
             echo $template->render();
         }
@@ -933,6 +938,8 @@ class SchwarzesBrettPlugin extends StudIPPlugin implements SystemPlugin
      */
     public function rss_action()
     {
+        if (get_config('BULLETIN_BOARD_ENABLE_RSS') != 1)
+            return;
         global $ABSOLUTE_URI_STUDIP;
         $studipUrl = $ABSOLUTE_URI_STUDIP;
         if (substr($ABSOLUTE_URI_STUDIP, -1) === '/')

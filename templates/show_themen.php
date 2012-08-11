@@ -58,8 +58,10 @@
 <div class="topic">
     <b>Themenübersicht:</b>
     <div style="float: right;">
-        <a href="<?= URLHelper::getLink($link_rss, array('thema_id' => 'all')) ?>">
-            <?= Assets::img('icons/16/white/rss.png', array('class' => 'text-top', 'title' => _('RSS Feed'))) ?></a>
+        <? if($enableRss): ?>
+            <a href="<?= URLHelper::getLink($link_rss, array('thema_id' => 'all')) ?>">
+                <?= Assets::img('icons/16/white/rss.png', array('class' => 'text-top', 'title' => _('RSS Feed'))) ?></a>
+        <? endif ?>
     </div>
 </div>
 <table class="blank" border="0" cellpadding="0" cellspacing="0" width="100%">
@@ -89,9 +91,11 @@
                     <?= Assets::img('icons/16/blue/trash.png', array('class' => 'text-top', 'title' => _('Thema inkl. aller Anzeigen löschen'))) ?>
                 </a>
         <? endif ?>
+        <? if($enableRss): ?>
                 <a href="<?= URLHelper::getLink($link_rss, array('thema_id' => $result['thema']->getThemaId())) ?>">
                     <?= Assets::img('icons/16/blue/rss.png', array('class' => 'text-top', 'title' => _('RSS Feed'))) ?>
                 </a>
+        <? endif ?>
         </div>
         <div style="clear:both; border-bottom: 1px solid #8e8e8e;"></div>
         <div id="list_<?=$result['thema']->getThemaId() ?>" style="display: none;">

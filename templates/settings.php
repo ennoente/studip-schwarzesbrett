@@ -20,6 +20,10 @@
             <td><?=$descBlameRecipients?></td>
             <td><input type="text" name="blameRecipients" value="<?=$blameRecipients ?>"></td>
         </tr>
+        <tr class="cycle_odd">
+            <td><?=$descEnableRss?></td>
+            <td><input type="checkbox" value="1" name="enableRss" <? if ($enableRss == 1) echo 'checked="checked"'; ?>></td>
+        </tr>
         <tr class="steel2">
             <td>&nbsp;</td>
             <td><?= makeButton('speichern', 'input', 'Einstellungen speichern') ?></td>
@@ -27,3 +31,8 @@
     </tbody>
 </table>
 </form>
+
+<h3>Hinweise</h3>
+<ul>
+    <li>Bei Aktivierung der RSS Feeds muss das Plugin f&uuml;r nobody freigegeben werden, damit die Feeds ohne Login abgerufen werden k&ouml;nnen.</li>
+</ul>
