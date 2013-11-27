@@ -465,7 +465,7 @@ class SchwarzesBrettPlugin extends StudIPPlugin implements SystemPlugin
         $statement = DBManager::get()->prepare($query);
         $statement->execute(array(
             $thema_id, $this->zeit, $this->user->id,
-            $this->perm->get_perm($this->user->userid),
+            $this->perm->get_perm($this->user->user_id),
         ));
         return $statement->fetchColumn();
     }
