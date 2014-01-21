@@ -78,6 +78,9 @@ class SchwarzesBrettPlugin extends StudIPPlugin implements SystemPlugin
             $user_nav->addSubNavigation('show', new AutoNavigation(_('Übersicht'), PluginEngine::getURL($this, array(), 'show')));
             //wenn auf der blacklist, darf man keine artikel mehr erstellen
             if (!$this->isBlacklisted($this->user->id)) {
+                if (Artikel::hasOwn($this->user->id, $this->zeit)) {
+                    $user_nav->addSubNavigation('own', new AutoNavigation(_('Meine Anzeigen'), PluginEngine::getURL($this, array(), 'ownArtikel')));
+                }                
                 $user_nav->addSubNavigation('add', new AutoNavigation(_('Anzeige erstellen'), PluginEngine::getURL($this, array(), 'editArtikel')));
             }
             $nav->addSubNavigation('show', $user_nav);
@@ -409,7 +412,58 @@ class SchwarzesBrettPlugin extends StudIPPlugin implements SystemPlugin
         $template->set_attribute('link_delete', PluginEngine::getURL($this, array(), 'deleteArtikel'));
         echo $template->render();
     }
+    
+    public function ownArtikel_action()
+    {
+        $query = "SELECT a.thema_id, a.artikel_id, a.titel, t.titel AS t_titel
+                  FROM sb_artikel AS a, sb_themen AS t
+                  WHERE t.thema_id = a.thema_id AND a.user_id = :user_id AND a.mkdate + :lifetime >= UNIX_TIMESTAMP()
+                  ORDER BY t.titel, a.titel";
+        $statement = DBManager::get()->prepare($query);
+        $statement->bindValue(':user_id', $this->user->id);
+        $statement->bindValue(':lifetime', $this->zeit);
+        $statement->execute();
 
+        $dbresults = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+        // keine Ergebnisse vorhanden
+        if(count($dbresults) == 0) {
+            $this->message = MessageBox::error("Es wurden für <em>" . htmlReady($search_text) . "</em> keine Ergebnisse gefunden.");
+            $this->showThemen();
+            return;
+       }
+
+        //Ergebnisse anzeigen
+        $results = array();
+        $thema = array();
+        foreach ($dbresults as $result) {
+            $a = new Artikel($result['artikel_id']);
+            if(empty($thema['thema_id'])) {
+                $thema['thema_id'] = $result['thema_id'];
+                $thema['thema_titel'] = htmlReady($result['t_titel']);
+                $thema['artikel'] = array();
+            } elseif($result['thema_id'] != $thema['thema_id']) {
+                $results[] = $thema;
+
+                $thema = array();
+                $thema['thema_id'] = $result['thema_id'];
+                $thema['thema_titel'] = htmlReady($result['t_titel']);
+                $thema['artikel'] = array();
+            }
+            $thema['artikel'][] = $this->showArtikel($a);
+        }
+        array_push($results, $thema);
+
+        //Ausgabe erzeugen
+        $template = $this->template_factory->open('search_results');
+        $template->set_layout($this->layout);
+        $template->set_attribute('zeit', $this->zeit);
+        $template->set_attribute('pluginpfad', $this->getPluginURL());
+        $template->set_attribute('link_search', PluginEngine::getURL($this, array("modus"=>"show_search_results")));
+        $template->set_attribute('link_back', PluginEngine::getURL($this, array(), 'show'));
+        $template->set_attribute('results', $results);
+        echo $template->render();
+    }
     /**
      * Gibt alle Anzeigen zu einem Thema zurück
      *
