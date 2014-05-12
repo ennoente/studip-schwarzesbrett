@@ -64,8 +64,8 @@ class SchwarzesBrettPlugin extends StudIPPlugin implements SystemPlugin
         }
 
         //Navigation
-        $nav = new AutoNavigation(_('Schwarzes Brett'), PluginEngine::getURL($this, array()));
-        $nav->setImage($image, array('title' => _('Schwarzes Brett'), 'class' => $this->hasNewArticles()));
+        $nav = new AutoNavigation(_('Weißes Brett'), PluginEngine::getURL($this, array()));
+        $nav->setImage($image, array('title' => _('Weißes Brett'), 'class' => $this->hasNewArticles()));
 
         //menu nur anzeigen, wenn eingeloggt
         if($this->perm->have_perm('user')) {
@@ -74,7 +74,7 @@ class SchwarzesBrettPlugin extends StudIPPlugin implements SystemPlugin
             PageLayout::addScript($this->getPluginURL().'/js/schwarzesbrett.js');
 
             //navigation
-            $user_nav =new AutoNavigation(_('Schwarzes Brett'), PluginEngine::getURL($this, array(), 'show'));
+            $user_nav =new AutoNavigation(_('Weißes Brett'), PluginEngine::getURL($this, array(), 'show'));
             $user_nav->addSubNavigation('show', new AutoNavigation(_('Übersicht'), PluginEngine::getURL($this, array(), 'show')));
             //wenn auf der blacklist, darf man keine artikel mehr erstellen
             if (!$this->isBlacklisted($this->user->id)) {
@@ -106,7 +106,7 @@ class SchwarzesBrettPlugin extends StudIPPlugin implements SystemPlugin
 
     public function initialize()
     {
-        PageLayout::setTitle(_('Schwarzes Brett'));
+        PageLayout::setTitle(_('Weißes Brett'));
     }
 
     public function getPluginname()
@@ -335,7 +335,7 @@ class SchwarzesBrettPlugin extends StudIPPlugin implements SystemPlugin
             if ($a->getUserId() != $this->user->id && $this->perm->have_perm('root')) {
                 $messaging = new messaging();
                 $msg = sprintf(_("Die Anzeige \"%s\" wurde von den System-Administratoren gelöscht.\n\n Bitte beachten Sie die Nutzungsordnung zum Erstellen von Anzeigen (Mehrfaches Einstellen ist nicht erlaubt). Bei wiederholtem Verstoß können Sie gesperrt werden."), $a->getTitel());
-                $messaging->insert_message($msg, get_username($a->getUserId()), "____%system%____", FALSE, FALSE, 1, FALSE, "Schwarzes Brett: Anzeige gelöscht!");
+                $messaging->insert_message($msg, get_username($a->getUserId()), "____%system%____", FALSE, FALSE, 1, FALSE, "Weißes Brett: Anzeige gelöscht!");
             }
             $a->delete();
             $this->message = MessageBox::success("Die Anzeige wurde erfolgreich gelöscht.");
@@ -372,7 +372,7 @@ class SchwarzesBrettPlugin extends StudIPPlugin implements SystemPlugin
                                 //nachricht an den benutzer
                 $messaging = new messaging();
                 $msg = _("Aufgrund von wiederholten Verstößen gegen die Nutzungsordnung wurde Ihr Zugang zum Schwarzen Brett gesperrt. Sie können keine weiteren Anzeigen erstellen.\n\n Bei Fragen wenden Sie sich bitte an die Systemadministratoren.");
-                $messaging->insert_message($msg, get_username(Request::option('user_id')), "____%system%____", FALSE, FALSE, 1, FALSE, "Schwarzes Brett: Sie wurden gesperrt.");
+                $messaging->insert_message($msg, get_username(Request::option('user_id')), "____%system%____", FALSE, FALSE, 1, FALSE, "Weißes Brett: Sie wurden gesperrt.");
 
                 $template->message = MessageBox::success(_('Der Benutzer wurde erfolgreich auf die Blacklist gesetzt.'));
             }
