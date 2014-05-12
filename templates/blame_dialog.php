@@ -1,5 +1,5 @@
-<div class="modalshadow">
-    <div class="messagebox messagebox_modal">
+<div class="modaloverlay">
+    <div class="messagebox">
         <?= formatReady($question) ?>
         <form name="add" method="post" action="<?=$approvalLink ?>">        
         <textarea placeholder="Grund" style="width: 100%;" name="blame_reason"></textarea>

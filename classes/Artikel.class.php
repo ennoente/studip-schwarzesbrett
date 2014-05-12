@@ -259,4 +259,19 @@ class Artikel
         $statement->execute(array($since));
         return $statement->fetchAll(PDO::FETCH_COLUMN);
     }
+    
+        
+    
+    public static function hasOwn($user_id, $lifetime)
+    {
+        $query = "SELECT 1
+                  FROM sb_artikel
+                  WHERE user_id = :user_id AND UNIX_TIMESTAMP() < mkdate + :lifetime";
+        $statement = DBManager::get()->prepare($query);
+        $statement->bindValue(':user_id', $user_id);
+        $statement->bindValue(':lifetime', $lifetime);
+        $statement->execute();
+
+        return $statement->fetchColumn();
+    }
 }
