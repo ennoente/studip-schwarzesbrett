@@ -111,7 +111,7 @@ class SchwarzesBrettPlugin extends StudIPPlugin implements SystemPlugin
 
     public function getPluginname()
     {
-        return _('Schwarzes Brett');
+        return _('Weiﬂes Brett');
     }
 
     /**
